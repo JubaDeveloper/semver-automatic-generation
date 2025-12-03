@@ -4,7 +4,7 @@
 # If the commit doesn't follow this pattern, no new version will be generated.
 # The tag message will be content that comes after the type(scope): in the commit message.
 # It also can be a commit to a specific environment like:
-# patch(...)[prod]: ... minor(...)[staging]: ... major(...)[dev]: ...
+# minor(...)[staging]: ... major(...)[dev]: ...
 # With this pattern we can later decide to deploy only certain versions to specific environments.
 name: Generate Semantic Version
 description: Action used to generate semantic version based on commit messages
