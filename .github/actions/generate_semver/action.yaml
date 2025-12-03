@@ -1,0 +1,115 @@
+# We will use semantic-release to automatically generate a new version
+# based on strictly defined commits that follow the pattern:
+# patch(...): ... minor(...): ... major(...): ...
+# If the commit doesn't follow this pattern, no new version will be generated.
+# The tag message will be content that comes after the type(scope): in the commit message.
+# It also can be a commit to a specific environment like:
+# patch(...)[prod]: ... minor(...)[staging]: ... major(...)[dev]: ...
+# With this pattern we can later decide to deploy only certain versions to specific environments.
+name: Generate Semantic Version
+description: Action used to generate semantic version based on commit messages
+inputs:
+  github_token:
+    required: true
+    description: The GitHub token to be used by semantic-release
+outputs:
+  new_release_published:
+    description: Whether a new release was published
+    value: ${{ steps.semantic.outputs.new_release_published }}
+  new_release_version:
+    description: Version of the new release
+    value: ${{ steps.semantic.outputs.new_release_version }}
+  new_release_major_version:
+    description: Major version of the new release
+    value: ${{ steps.semantic.outputs.new_release_major_version }}
+  new_release_minor_version:
+    description: Minor version of the new release
+    value: ${{ steps.semantic.outputs.new_release_minor_version }}
+  new_release_patch_version:
+    description: Patch version of the new release
+    value: ${{ steps.semantic.outputs.new_release_patch_version }}
+  new_release_notes:
+    description: Release notes of the new release
+    value: ${{ steps.semantic.outputs.new_release_notes }}
+runs:
+  using: composite
+  steps:
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+    
+    - name: Install dependencies
+      shell: bash
+      run: |
+        if [ ! -f package.json ]; then
+          npm init -y
+        fi
+        npm install --save-dev semantic-release @semantic-release/changelog @semantic-release/git @semantic-release/github
+    
+    - name: Create semantic-release config
+      shell: bash
+      run: |
+        cat > .releaserc.json << 'EOF'
+        {
+          "branches": ["main", "master"],
+          "plugins": [
+            [
+              "@semantic-release/commit-analyzer",
+              {
+                "preset": "conventionalcommits",
+                "releaseRules": [
+                  {"type": "patch", "release": "patch"},
+                  {"type": "minor", "release": "minor"},
+                  {"type": "major", "release": "major"},
+                  {"type": "feat", "release": "minor"},
+                  {"type": "fix", "release": "patch"},
+                  {"type": "perf", "release": "patch"},
+                  {"type": "revert", "release": "patch"},
+                  {"type": "docs", "release": false},
+                  {"type": "style", "release": false},
+                  {"type": "chore", "release": false},
+                  {"type": "refactor", "release": false},
+                  {"type": "test", "release": false},
+                  {"type": "build", "release": false},
+                  {"type": "ci", "release": false}
+                ]
+              }
+            ],
+            [
+              "@semantic-release/release-notes-generator",
+              {
+                "preset": "conventionalcommits",
+                "presetConfig": {
+                  "types": [
+                    {"type": "feat", "section": "Features"},
+                    {"type": "fix", "section": "Bug Fixes"},
+                    {"type": "patch", "section": "Patches"},
+                    {"type": "minor", "section": "Minor Changes"},
+                    {"type": "major", "section": "Breaking Changes"},
+                    {"type": "perf", "section": "Performance Improvements"},
+                    {"type": "revert", "section": "Reverts"}
+                  ]
+                }
+              }
+            ],
+            "@semantic-release/changelog",
+            [
+              "@semantic-release/git",
+              {
+                "assets": ["CHANGELOG.md", "package.json"],
+                "message": "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
+              }
+            ],
+            "@semantic-release/github"
+          ]
+        }
+        EOF
+    
+    - name: Release
+      id: semantic
+      shell: bash
+      run: npx semantic-release
+      env:
+        GITHUB_TOKEN: ${{ inputs.github_token }}

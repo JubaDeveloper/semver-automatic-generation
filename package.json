@@ -1,0 +1,27 @@
+{
+  "name": "semver-automatic-generation",
+  "version": "0.0.0",
+  "description": "Automatic semantic versioning based on commit messages",
+  "main": "index.js",
+  "scripts": {
+    "semantic-release": "semantic-release"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yourusername/semver-automatic-generation.git"
+  },
+  "keywords": [
+    "semantic-versioning",
+    "automation",
+    "github-actions",
+    "continuous-integration"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "semantic-release": "^22.0.0",
+    "@semantic-release/changelog": "^6.0.0",
+    "@semantic-release/git": "^10.0.0",
+    "@semantic-release/github": "^9.0.0"
+  }
+}
