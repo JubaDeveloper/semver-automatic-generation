@@ -1,3 +1,20 @@
+## 1.0.0 (2025-12-03)
+
+
+### Patches
+
+* **feat::foo:** bar ([6ba9fec](https://github.com/JubaDeveloper/semver-automatic-generation/commit/6ba9fec9327ff6f387904372aed6c15355f22888))
+
+
+### Minor Changes
+
+* **feat::foo:** bar ([b341108](https://github.com/JubaDeveloper/semver-automatic-generation/commit/b341108acf51a1292b6558cebab9846a6464ab2c))
+
+
+### Breaking Changes
+
+* **feat::foo:** bar ([e4a7750](https://github.com/JubaDeveloper/semver-automatic-generation/commit/e4a77502f595752cfef3f8b9cd551b4c5cb39752))
+
 ## [2.1.0](https://github.com/JubaDeveloper/semver-automatic-generation/compare/v2.0.0...v2.1.0) (2025-12-03)
 
 
