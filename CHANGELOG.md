@@ -1,3 +1,10 @@
+## [2.0.0](https://github.com/JubaDeveloper/semver-automatic-generation/compare/v1.0.0...v2.0.0) (2025-12-03)
+
+
+### Breaking Changes
+
+* **feat::foo:** bar ([e4a7750](https://github.com/JubaDeveloper/semver-automatic-generation/commit/e4a77502f595752cfef3f8b9cd551b4c5cb39752))
+
 ## 1.0.0 (2025-12-03)
 
 
