@@ -1,3 +1,10 @@
+## 1.0.0 (2025-12-03)
+
+
+### Patches
+
+* **feat::foo:** bar ([6ba9fec](https://github.com/JubaDeveloper/semver-automatic-generation/commit/6ba9fec9327ff6f387904372aed6c15355f22888))
+
 # Changelog
 
 All notable changes to this project will be documented in this file.
