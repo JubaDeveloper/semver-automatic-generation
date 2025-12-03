@@ -48,12 +48,44 @@ runs:
         fi
         npm install --save-dev semantic-release @semantic-release/changelog @semantic-release/git @semantic-release/github
     
+    - name: Extract environment from commit
+      shell: bash
+      id: extract-env
+      run: |
+        # Get the latest commit message
+        COMMIT_MSG=$(git log -1 --pretty=%s)
+        echo "Commit message: $COMMIT_MSG"
+        
+        # Extract environment from pattern like: type(scope)[env]: message
+        if [[ $COMMIT_MSG =~ \[([^]]+)\] ]]; then
+          ENV="${BASH_REMATCH[1]}"
+          echo "Environment found: $ENV"
+          # Don't append environment for prod - treat as standard release
+          if [ "$ENV" = "prod" ]; then
+            echo "Production release - no environment suffix"
+            echo "env=" >> $GITHUB_OUTPUT
+          else
+            echo "Non-production environment: $ENV"
+            echo "env=$ENV" >> $GITHUB_OUTPUT
+          fi
+        else
+          echo "No environment specified"
+          echo "env=" >> $GITHUB_OUTPUT
+        fi
+    
     - name: Create semantic-release config
       shell: bash
       run: |
-        cat > .releaserc.json << 'EOF'
+        ENV="${{ steps.extract-env.outputs.env }}"
+        TAG_FORMAT="v\${version}"
+        if [ -n "$ENV" ]; then
+          TAG_FORMAT="v\${version}-$ENV"
+        fi
+        
+        cat > .releaserc.json << EOF
         {
           "branches": ["main", "master"],
+          "tagFormat": "$TAG_FORMAT",
           "plugins": [
             [
               "@semantic-release/commit-analyzer",
@@ -99,10 +131,17 @@ runs:
               "@semantic-release/git",
               {
                 "assets": ["CHANGELOG.md", "package.json"],
-                "message": "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
+                "message": "chore(release): \${nextRelease.version} [skip ci]\\n\\n\${nextRelease.notes}"
               }
             ],
-            "@semantic-release/github"
+            [
+              "@semantic-release/github",
+              {
+                "successComment": false,
+                "failComment": false,
+                "releasedLabels": false
+              }
+            ]
           ]
         }
         EOF
