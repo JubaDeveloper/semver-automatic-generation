@@ -6,10 +6,6 @@
   "scripts": {
     "semantic-release": "semantic-release"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/yourusername/semver-automatic-generation.git"
-  },
   "keywords": [
     "semantic-versioning",
     "automation",
