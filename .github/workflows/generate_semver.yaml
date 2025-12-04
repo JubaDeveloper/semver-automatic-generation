@@ -2,14 +2,16 @@ name: Semantic Version Release
 
 on:
   workflow_call:
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
 jobs:
   semantic-release:
     runs-on: ubuntu-latest
     if: github.event_name == 'push'
-    permissions:
-      contents: write
-      issues: write
-      pull-requests: write
     
     steps:
       - name: Checkout code
